@@ -1,0 +1,29 @@
+name: streaming-settlement
+
+services:
+  database:
+    image: mysql:8.0.39
+    container_name: streaming-settlement-db
+    env_file: .env.db
+    volumes:
+      - type: volume
+        source: mysql-data
+        target: /var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "database" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: fractalo/streaming-settlement-backend:latest
+    container_name: streaming-settlement-backend
+    env_file: .env.backend
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  mysql-data:
