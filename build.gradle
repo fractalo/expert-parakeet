@@ -48,7 +48,6 @@ tasks.named('test') {
 
 def dockerhubUsername = System.getenv("DOCKERHUB_USERNAME") ?: ""
 def dockerhubPassword = System.getenv("DOCKERHUB_PASSWORD") ?: ""
-def targetImageName = System.getenv("IMAGE_NAME") ?: ""
 
 jib {
 	from {
@@ -59,7 +58,7 @@ jib {
 		}
 	}
 	to {
-		image = targetImageName
+		image = "fractalo/streaming-settlement-backend:latest"
 		auth {
 			username = dockerhubUsername
 			password = dockerhubPassword
