@@ -1,6 +1,6 @@
 package com.github.fractalo.streaming_settlement.domain;
 
-import com.github.fractalo.streaming_settlement.security.user.OAuth2UserDetail;
+import com.github.fractalo.streaming_settlement.oauth2.user.OAuth2UserDetail;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;

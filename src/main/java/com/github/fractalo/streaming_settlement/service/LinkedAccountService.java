@@ -2,7 +2,7 @@ package com.github.fractalo.streaming_settlement.service;
 
 import com.github.fractalo.streaming_settlement.domain.LinkedAccount;
 import com.github.fractalo.streaming_settlement.repository.LinkedAccountRepository;
-import com.github.fractalo.streaming_settlement.security.user.OAuth2UserDetail;
+import com.github.fractalo.streaming_settlement.oauth2.user.OAuth2UserDetail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

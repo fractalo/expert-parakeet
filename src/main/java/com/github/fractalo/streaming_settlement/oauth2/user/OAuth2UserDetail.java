@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.security.user;
+package com.github.fractalo.streaming_settlement.oauth2.user;
 
 public interface OAuth2UserDetail {
     String getProviderId();

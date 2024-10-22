@@ -1,6 +1,6 @@
 package com.github.fractalo.streaming_settlement.config;
 
-import com.github.fractalo.streaming_settlement.security.CustomOAuth2UserService;
+import com.github.fractalo.streaming_settlement.oauth2.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

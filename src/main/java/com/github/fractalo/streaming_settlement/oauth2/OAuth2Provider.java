@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.security;
+package com.github.fractalo.streaming_settlement.oauth2;
 
 
 import lombok.Getter;

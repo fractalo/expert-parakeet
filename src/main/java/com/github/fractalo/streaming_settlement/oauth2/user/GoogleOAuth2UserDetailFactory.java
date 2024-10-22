@@ -1,6 +1,6 @@
-package com.github.fractalo.streaming_settlement.security.user;
+package com.github.fractalo.streaming_settlement.oauth2.user;
 
-import com.github.fractalo.streaming_settlement.security.OAuth2Provider;
+import com.github.fractalo.streaming_settlement.oauth2.OAuth2Provider;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 

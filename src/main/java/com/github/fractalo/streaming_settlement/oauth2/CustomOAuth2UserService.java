@@ -1,9 +1,9 @@
-package com.github.fractalo.streaming_settlement.security;
+package com.github.fractalo.streaming_settlement.oauth2;
 
 import com.github.fractalo.streaming_settlement.domain.LinkedAccount;
 import com.github.fractalo.streaming_settlement.domain.Member;
-import com.github.fractalo.streaming_settlement.security.user.OAuth2UserDetail;
-import com.github.fractalo.streaming_settlement.security.user.OAuth2UserDetailFactory;
+import com.github.fractalo.streaming_settlement.oauth2.user.OAuth2UserDetail;
+import com.github.fractalo.streaming_settlement.oauth2.user.OAuth2UserDetailFactory;
 import com.github.fractalo.streaming_settlement.service.LinkedAccountService;
 import com.github.fractalo.streaming_settlement.service.MemberService;
 import lombok.RequiredArgsConstructor;

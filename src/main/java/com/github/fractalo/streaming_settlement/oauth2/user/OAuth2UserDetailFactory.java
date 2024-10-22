@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.security.user;
+package com.github.fractalo.streaming_settlement.oauth2.user;
 
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
