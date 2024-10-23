@@ -22,5 +22,11 @@ spring:
             authorization-grant-type: authorization_code
             scope: profile,email
 
+jwt:
+  secret: ${JWT_SECRET_KEY}
+
 server:
   port: ${SERVER_PORT}
+
+frontend:
+  base-url: ${FRONTEND_BASE_URL:}
