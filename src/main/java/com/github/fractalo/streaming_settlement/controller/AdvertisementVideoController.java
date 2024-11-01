@@ -19,7 +19,7 @@ public class AdvertisementVideoController {
 
     @GetMapping
     public List<AdvertisementVideoMeta> getAdvertisementVideos(
-            @RequestBody @Valid AdvertisementVideoWatchingContext context) {
+            @ModelAttribute AdvertisementVideoWatchingContext context) {
         return advertisementVideoService.getAdvertisementVideoMeta(context);
     }
 
@@ -33,7 +33,7 @@ public class AdvertisementVideoController {
     }
 
     @PostMapping("/{adVideoId}/video-exposures/{videoId}/view-count/increment")
-    public void increaseViewCount(@PathVariable("adVideoId") Long adVideoId,
+    public void increaseViewCount(@PathVariable Long adVideoId,
                                   @PathVariable Long videoId,
                                   @AuthenticationPrincipal Long memberId,
                                   HttpServletRequest request) {
