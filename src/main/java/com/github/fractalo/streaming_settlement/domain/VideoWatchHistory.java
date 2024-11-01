@@ -3,6 +3,7 @@ package com.github.fractalo.streaming_settlement.domain;
 import com.github.fractalo.streaming_settlement.dto.VideoWatchingContext;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,12 +37,14 @@ public class VideoWatchHistory {
 
     @Setter
     @NotNull
+    @PositiveOrZero
     private Long lastPlaybackPositionMs = 0L;
 
     @NotNull
     private Boolean isStopped = false;
 
     @NotNull
+    @PositiveOrZero
     private Long watchTimeMs = 0L;
 
     @NotNull
@@ -78,7 +81,7 @@ public class VideoWatchHistory {
     }
 
     public boolean isActive() {
-        return Duration.between(Instant.now(), lastViewedAt).toMillis() < ACTIVE_WINDOW_MS;
+        return Duration.between(lastViewedAt, Instant.now()).toMillis() < ACTIVE_WINDOW_MS;
     }
 
     public void updateHistory(Boolean isStopped) {
@@ -105,7 +108,7 @@ public class VideoWatchHistory {
 
     private void accumulateWatchTime() {
         final Instant now = Instant.now();
-        incrementWatchTime(Duration.between(now, lastViewedAt).toMillis());
+        incrementWatchTime(Duration.between(lastViewedAt, now).toMillis());
         lastViewedAt = now;
     }
 
