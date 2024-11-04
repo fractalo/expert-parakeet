@@ -1,7 +1,6 @@
 package com.github.fractalo.streaming_settlement.service;
 
-import com.github.fractalo.streaming_settlement.domain.DailyVideoMetrics;
-import com.github.fractalo.streaming_settlement.domain.Member;
+import com.github.fractalo.streaming_settlement.domain.DailyVideoMetricsSnapshot;
 import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.domain.VideoWatchHistory;
 import com.github.fractalo.streaming_settlement.dto.SimpleMember;
@@ -20,7 +19,7 @@ public class VideoService {
     private final VideoRepository videoRepository;
     private final AdvertisementVideoService advertisementVideoService;
     private final VideoWatchHistoryRepository videoWatchHistoryRepository;
-    private final DailyVideoMetricsService dailyVideoMetricsService;
+    private final DailyVideoMetricsSnapshotService dailyVideoMetricsSnapshotService;
 
     @Transactional(readOnly = true)
     public VideoMeta getVideoMeta(Long videoId, Long memberId) {
@@ -45,10 +44,9 @@ public class VideoService {
             throw new IllegalArgumentException("cannot increase view count of own video");
         }
 
-        DailyVideoMetrics dailyVideoMetrics = dailyVideoMetricsService.createOrGetDailyVideoMetricsForUpdate(video);
+        dailyVideoMetricsSnapshotService.tryCreateSnapshotIfRequired(video);
 
         video.increaseViewCount();
-        dailyVideoMetrics.updateViewCount(video);
     }
 
     @Transactional(readOnly = true)

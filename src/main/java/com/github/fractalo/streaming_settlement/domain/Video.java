@@ -34,7 +34,6 @@ public class Video {
     @PositiveOrZero
     private Long durationMs;
 
-    @NotNull
     @CreationTimestamp
     private Instant createdAt;
 
@@ -43,12 +42,21 @@ public class Video {
     @JoinColumn(name = "member_id")
     private Member uploader;
 
+    private Instant metricsUpdatedAt;
+
     public void increaseViewCount() {
         ++viewCount;
+        updateMetricsUpdatedAt();
     }
 
     public void increaseAdVideoViewCount() {
         ++advertisementVideoViewCount;
+        updateMetricsUpdatedAt();
+    }
+
+    private void updateMetricsUpdatedAt() {
+        if (createdAt == null) return;
+        metricsUpdatedAt = Instant.now();
     }
 
 }
