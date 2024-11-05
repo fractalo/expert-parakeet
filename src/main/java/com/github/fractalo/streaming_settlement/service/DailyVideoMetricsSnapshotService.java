@@ -18,13 +18,15 @@ public class DailyVideoMetricsSnapshotService {
     private final DailyVideoMetricsSnapshotRepository dailyVideoMetricsSnapshotRepository;
     private final SettlementConst settlementConst;
 
-    @Transactional(noRollbackFor = DataIntegrityViolationException.class)
+    @Transactional
     public void tryCreateSnapshotIfRequired(Video video) {
         if (!isSnapshotRequired(video)) return;
 
         LocalDate yesterday = LocalDate.now(settlementConst.ZONE_ID).minusDays(1);
         DailyVideoMetricsSnapshot snapshot = new DailyVideoMetricsSnapshot(video, yesterday);
-        dailyVideoMetricsSnapshotRepository.save(snapshot);
+        try {
+            dailyVideoMetricsSnapshotRepository.save(snapshot);
+        } catch (DataIntegrityViolationException ignored) {}
     }
 
     private boolean isSnapshotRequired(Video video) {
