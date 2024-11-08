@@ -9,7 +9,7 @@ import java.time.ZoneId;
 public class SettlementConst {
     public final ZoneId ZONE_ID;
 
-    public SettlementConst(@Value("${settlement.timezone}") String settlementTimezone) {
-        ZONE_ID = ZoneId.of(settlementTimezone);
+    public SettlementConst(@Value("${settlement.timezone}") String timezone) {
+        ZONE_ID = ZoneId.of(timezone);
     }
 }
