@@ -13,6 +13,9 @@ import java.time.Instant;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+        @Index(name = "idx_video_id_created_at", columnList = "video_id, created_at"),
+})
 public class Video {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
