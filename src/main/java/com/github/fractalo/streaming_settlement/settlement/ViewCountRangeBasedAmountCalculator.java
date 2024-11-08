@@ -8,7 +8,7 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ViewCountRangeBasedFeeCalculator {
+public class ViewCountRangeBasedAmountCalculator {
     private final List<ViewCountUnitPriceRange> ranges;
 
     public double calculate(long processedViewCount, long viewCount) {
@@ -17,7 +17,7 @@ public class ViewCountRangeBasedFeeCalculator {
             return 0;
         }
 
-        double totalSettlementFee = 0;
+        double totalSettlementAmount = 0;
         ViewCountUnitPriceRange currentRange = iterator.next();
 
         processedViewCount = Math.max(currentRange.minViewCount() - 1, processedViewCount);
@@ -35,13 +35,13 @@ public class ViewCountRangeBasedFeeCalculator {
             }
 
             if (rangeViewCount > processedViewCount) {
-                double settlementFee = (rangeViewCount - processedViewCount) * unitPrice;
-                totalSettlementFee += settlementFee;
+                double settlementAmount = (rangeViewCount - processedViewCount) * unitPrice;
+                totalSettlementAmount += settlementAmount;
                 processedViewCount = rangeViewCount;
             }
         }
 
-        return totalSettlementFee;
+        return totalSettlementAmount;
     }
 
 }
