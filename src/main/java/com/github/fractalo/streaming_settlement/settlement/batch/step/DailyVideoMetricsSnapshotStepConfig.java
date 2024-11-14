@@ -3,9 +3,12 @@ package com.github.fractalo.streaming_settlement.settlement.batch.step;
 import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;
 import com.github.fractalo.streaming_settlement.service.DailyVideoMetricsSnapshotService;
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.flow.FlowExecutionStatus;
+import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
@@ -51,7 +54,7 @@ public class DailyVideoMetricsSnapshotStepConfig {
         Instant startOfNextDay = baseDate.plusDays(1).atStartOfDay(settlementConst.ZONE_ID).toInstant();
         return new RepositoryItemReaderBuilder<Video>()
                 .name("videoReader")
-                .pageSize(CHUNK_SIZE)
+                .pageSize(CHUNK_SIZE)ㅎ
                 .methodName("findByCreatedAtBefore")
                 .arguments(Collections.singletonList(startOfNextDay))
                 .repository(videoRepository)
@@ -63,4 +66,21 @@ public class DailyVideoMetricsSnapshotStepConfig {
     public ItemWriter<Video> dailyVideoMetricsSnapshotWriter() {
         return videos -> videos.forEach(dailyVideoMetricsSnapshotService::tryCreateSnapshotIfRequired);
     }
+
+    @Bean
+    public JobExecutionDecider skipDailyVideoMetricsSnapshotStepDecider() {
+        return (jobExecution, stepExecution) -> {
+            LocalDate baseDate = jobExecution.getJobParameters().getLocalDate("baseDate");
+            LocalDate yesterday = LocalDate.now(settlementConst.ZONE_ID).minusDays(1);
+
+            assert baseDate != null;
+
+            if (baseDate.isEqual(yesterday)) {
+                return new FlowExecutionStatus("CONTINUE");
+            } else {
+                return new FlowExecutionStatus("SKIP");
+            }
+        };
+    }
+
 }
