@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.constant;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

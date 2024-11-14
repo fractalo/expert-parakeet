@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.batch.step;
 
 import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;

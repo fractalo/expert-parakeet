@@ -1,5 +1,7 @@
 package com.github.fractalo.streaming_settlement.settlement;
 
+import com.github.fractalo.streaming_settlement.settlement.calculator.ViewCountRangeBasedAmountCalculator;
+import com.github.fractalo.streaming_settlement.settlement.calculator.ViewCountUnitPriceRange;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

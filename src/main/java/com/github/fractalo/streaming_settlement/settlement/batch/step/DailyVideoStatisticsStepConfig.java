@@ -1,9 +1,11 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.batch.step;
 
 import com.github.fractalo.streaming_settlement.domain.DailyVideoStatistics;
 import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.repository.DailyVideoStatisticsRepository;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;
+import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput;
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
@@ -58,7 +60,7 @@ public class DailyVideoStatisticsStepConfig {
         return new JpaPagingItemReaderBuilder<DailyVideoStatisticsInput>()
                 .name("dailyVideoStatisticsInputReader")
                 .queryString("""
-                        SELECT new com.github.fractalo.streaming_settlement.settlement.DailyVideoStatisticsInput(
+                        SELECT new com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput(
                             v.id,
                             COALESCE(today_vms.viewCount - yesterday_vms.viewCount, today_vms.viewCount),
                             COALESCE(SUM(vwh.watchTimeMs), 0),
