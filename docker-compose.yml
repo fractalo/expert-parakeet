@@ -1,14 +1,44 @@
 name: streaming-settlement
 
 services:
-  database:
+  source-database:
     image: mysql:8.0.39
-    container_name: streaming-settlement-db
-    env_file: .env.db
+    container_name: streaming-settlement-source-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=streaming_settlement
     volumes:
       - type: volume
-        source: mysql-data
+        source: source-mysql-data
         target: /var/lib/mysql
+      - type: bind
+        source: ./source-db.cnf
+        target: /etc/mysql/conf.d/source.cnf
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "database" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  replica-database:
+    image: mysql:8.0.39
+    container_name: streaming-settlement-replica-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=streaming_settlement
+    volumes:
+      - type: volume
+        source: replica-mysql-data
+        target: /var/lib/mysql
+      - type: bind
+        source: ./replica-db.cnf
+        target: /etc/mysql/conf.d/replica.cnf
+    depends_on:
+      - source-database
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "database" ]
       interval: 5s
@@ -22,8 +52,11 @@ services:
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     depends_on:
-      database:
+      source-database:
+        condition: service_healthy
+      replica-database:
         condition: service_healthy
 
 volumes:
-  mysql-data:
+  source-mysql-data:
+  replica-mysql-data:
