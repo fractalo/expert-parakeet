@@ -54,7 +54,7 @@ public class DailyVideoMetricsSnapshotStepConfig {
         Instant startOfNextDay = baseDate.plusDays(1).atStartOfDay(settlementConst.ZONE_ID).toInstant();
         return new RepositoryItemReaderBuilder<Video>()
                 .name("videoReader")
-                .pageSize(CHUNK_SIZE)ㅎ
+                .pageSize(CHUNK_SIZE)
                 .methodName("findByCreatedAtBefore")
                 .arguments(Collections.singletonList(startOfNextDay))
                 .repository(videoRepository)
