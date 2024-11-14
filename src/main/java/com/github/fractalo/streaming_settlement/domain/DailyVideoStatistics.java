@@ -1,6 +1,6 @@
 package com.github.fractalo.streaming_settlement.domain;
 
-import com.github.fractalo.streaming_settlement.settlement.DailyVideoStatisticsInput;
+import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;

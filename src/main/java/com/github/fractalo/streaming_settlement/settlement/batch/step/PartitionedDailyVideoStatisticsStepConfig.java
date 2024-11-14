@@ -1,23 +1,28 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.batch.step;
 
 import com.github.fractalo.streaming_settlement.domain.DailyVideoStatistics;
-import com.github.fractalo.streaming_settlement.domain.Video;
-import com.github.fractalo.streaming_settlement.repository.DailyVideoStatisticsRepository;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;
+import com.github.fractalo.streaming_settlement.settlement.batch.VideoIdRangePartitioner;
+import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput;
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.partition.PartitionHandler;
+import org.springframework.batch.core.partition.support.Partitioner;
+import org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Instant;
@@ -26,39 +31,53 @@ import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-public class DailyVideoStatisticsStepConfig {
+public class PartitionedDailyVideoStatisticsStepConfig {
 
+    public static final String STEP_NAME = "partitionedDailyVideoStatisticsStep";
     private static final int CHUNK_SIZE = 50;
+    private static final int POOL_SIZE = 10;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;
     private final EntityManagerFactory entityManagerFactory;
     private final VideoRepository videoRepository;
     private final SettlementConst settlementConst;
-    private final DailyVideoStatisticsRepository dailyVideoStatisticsRepository;
+    private final ItemProcessor<DailyVideoStatisticsInput, DailyVideoStatistics> dailyVideoStatisticsProcessor;
+    private final RepositoryItemWriter<DailyVideoStatistics> dailyVideoStatisticsWriter;
+
 
     @Bean
-    public Step dailyVideoStatisticsStep() {
-        return new StepBuilder("dailyVideoStatisticsStep", jobRepository)
+    public Step partitionedDailyVideoStatisticsStep() {
+        return new StepBuilder(STEP_NAME, jobRepository)
                 .<DailyVideoStatisticsInput, DailyVideoStatistics>chunk(CHUNK_SIZE, platformTransactionManager)
-                .reader(dailyVideoStatisticsInputReader(null))
-                .processor(dailyVideoStatisticsProcessor(null))
-                .writer(dailyVideoStatisticsWriter())
+                .reader(partitionedDailyVideoStatisticsInputReader(null, null, null))
+                .processor(dailyVideoStatisticsProcessor)
+                .writer(dailyVideoStatisticsWriter)
+                .build();
+    }
+
+    @Bean
+    public Step partitionedDailyVideoStatisticsStepManager() {
+        return new StepBuilder(STEP_NAME + ".manager", jobRepository)
+                .partitioner(STEP_NAME, partitioner(null))
+                .partitionHandler(partitionHandler())
                 .build();
     }
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<DailyVideoStatisticsInput> dailyVideoStatisticsInputReader(
-            @Value("#{jobParameters[baseDate]}") LocalDate baseDate
+    public JpaPagingItemReader<DailyVideoStatisticsInput> partitionedDailyVideoStatisticsInputReader(
+            @Value("#{jobParameters[baseDate]}") LocalDate baseDate,
+            @Value("#{stepExecutionContext[minVideoId]}") Long minVideoId,
+            @Value("#{stepExecutionContext[maxVideoId]}") Long maxVideoId
     ) {
         Instant startOfDay = baseDate.atStartOfDay(settlementConst.ZONE_ID).toInstant();
         Instant startOfNextDay = baseDate.plusDays(1).atStartOfDay(settlementConst.ZONE_ID).toInstant();
 
         return new JpaPagingItemReaderBuilder<DailyVideoStatisticsInput>()
-                .name("dailyVideoStatisticsInputReader")
+                .name("partitionedDailyVideoStatisticsInputReader")
                 .queryString("""
-                        SELECT new com.github.fractalo.streaming_settlement.settlement.DailyVideoStatisticsInput(
+                        SELECT new com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput(
                             v.id,
                             COALESCE(today_vms.viewCount - yesterday_vms.viewCount, today_vms.viewCount),
                             COALESCE(SUM(vwh.watchTimeMs), 0),
@@ -80,7 +99,7 @@ public class DailyVideoStatisticsStepConfig {
                             LEFT JOIN DailyVideoStatistics yesterday_vs
                                 ON yesterday_vs.video.id = v.id
                                 AND yesterday_vs.date = :yesterday
-                        WHERE v.createdAt < :startOfNextDay
+                        WHERE v.id BETWEEN :minVideoId AND :maxVideoId
                         GROUP BY v.id
                         ORDER BY v.id ASC
                         """)
@@ -90,27 +109,39 @@ public class DailyVideoStatisticsStepConfig {
                         "startOfDay", startOfDay,
                         "startOfNextDay", startOfNextDay,
                         "today", baseDate,
-                        "yesterday", baseDate.minusDays(1)
+                        "yesterday", baseDate.minusDays(1),
+                        "minVideoId", minVideoId,
+                        "maxVideoId", maxVideoId
                 ))
                 .build();
     }
 
-    @Bean
+    @Bean(name = STEP_NAME + "_partitioner")
     @StepScope
-    public ItemProcessor<DailyVideoStatisticsInput, DailyVideoStatistics> dailyVideoStatisticsProcessor(
+    public Partitioner partitioner(
             @Value("#{jobParameters[baseDate]}") LocalDate baseDate
     ) {
-        return statisticsInput -> {
-            Video videoReference = videoRepository.getReferenceById(statisticsInput.videoId());
-            return new DailyVideoStatistics(videoReference, baseDate, statisticsInput);
-        };
+        return new VideoIdRangePartitioner(videoRepository, settlementConst, baseDate);
     }
 
-    @Bean
-    public RepositoryItemWriter<DailyVideoStatistics> dailyVideoStatisticsWriter() {
-        return new RepositoryItemWriterBuilder<DailyVideoStatistics>()
-                .repository(dailyVideoStatisticsRepository)
-                .methodName("save")
-                .build();
+    @Bean(name = STEP_NAME + "_taskExecutor")
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(POOL_SIZE);
+        executor.setMaxPoolSize(POOL_SIZE);
+        executor.setThreadNamePrefix(STEP_NAME + "-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.initialize();
+        return executor;
     }
+
+    @Bean(name = STEP_NAME + "_partitionHandler")
+    public PartitionHandler partitionHandler() {
+        TaskExecutorPartitionHandler partitionHandler = new TaskExecutorPartitionHandler();
+        partitionHandler.setStep(partitionedDailyVideoStatisticsStep());
+        partitionHandler.setTaskExecutor(taskExecutor());
+        partitionHandler.setGridSize(POOL_SIZE);
+        return partitionHandler;
+    }
+
 }

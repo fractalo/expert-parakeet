@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.calculator;
 
 public record ViewCountUnitPriceRange(
         long minViewCount,

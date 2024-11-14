@@ -7,7 +7,7 @@ import com.github.fractalo.streaming_settlement.dto.VideoWatchingContext;
 import com.github.fractalo.streaming_settlement.repository.MemberRepository;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;
 import com.github.fractalo.streaming_settlement.repository.VideoWatchHistoryRepository;
-import com.github.fractalo.streaming_settlement.settlement.SettlementConst;
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

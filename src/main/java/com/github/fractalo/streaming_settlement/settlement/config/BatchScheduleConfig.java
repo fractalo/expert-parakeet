@@ -1,5 +1,6 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.config;
 
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;

@@ -1,4 +1,4 @@
-package com.github.fractalo.streaming_settlement.settlement;
+package com.github.fractalo.streaming_settlement.settlement.calculator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

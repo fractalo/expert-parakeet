@@ -3,7 +3,7 @@ package com.github.fractalo.streaming_settlement.service;
 import com.github.fractalo.streaming_settlement.domain.DailyVideoMetricsSnapshot;
 import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.repository.DailyVideoMetricsSnapshotRepository;
-import com.github.fractalo.streaming_settlement.settlement.SettlementConst;
+import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
