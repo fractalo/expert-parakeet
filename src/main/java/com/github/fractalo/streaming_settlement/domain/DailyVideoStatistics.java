@@ -15,7 +15,13 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "unq_video_id_date", columnList = "video_id, date", unique = true)
+        @Index(name = "unq_video_id_date", columnList = "video_id, date", unique = true),
+        @Index(name = "idx_view_count_increment", columnList = "view_count_increment"),
+        @Index(name = "idx_weekly_view_count", columnList = "weekly_view_count"),
+        @Index(name = "idx_monthly_view_count", columnList = "monthly_view_count"),
+        @Index(name = "idx_watch_time_increment_ms", columnList = "watch_time_increment_ms"),
+        @Index(name = "idx_weekly_watch_time_ms", columnList = "weekly_watch_time_ms"),
+        @Index(name = "idx_monthly_watch_time_ms", columnList = "monthly_watch_time_ms"),
 })
 public class DailyVideoStatistics {
     @Id
