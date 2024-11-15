@@ -45,7 +45,7 @@ public class DailyVideoStatistics {
 
     @NotNull
     @PositiveOrZero
-    private Long watchTimeMsIncrement;
+    private Long watchTimeIncrementMs;
 
     @NotNull
     @PositiveOrZero
@@ -60,22 +60,22 @@ public class DailyVideoStatistics {
         this.video = video;
         this.date = date;
         this.viewCountIncrement = input.viewCountIncrement();
-        this.watchTimeMsIncrement = input.watchTimeMsIncrement();
+        this.watchTimeIncrementMs = input.watchTimeIncrementMs();
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
             this.weeklyViewCount = input.viewCountIncrement();
-            this.weeklyWatchTimeMs = input.watchTimeMsIncrement();
+            this.weeklyWatchTimeMs = input.watchTimeIncrementMs();
         } else {
             this.weeklyViewCount = input.yesterdayWeeklyViewCount() + input.viewCountIncrement();
-            this.weeklyWatchTimeMs = input.yesterdayWeeklyWatchTimeMs() + input.watchTimeMsIncrement();
+            this.weeklyWatchTimeMs = input.yesterdayWeeklyWatchTimeMs() + input.watchTimeIncrementMs();
         }
 
         if (date.getDayOfMonth() == 1) {
             this.monthlyViewCount = input.viewCountIncrement();
-            this.monthlyWatchTimeMs = input.watchTimeMsIncrement();
+            this.monthlyWatchTimeMs = input.watchTimeIncrementMs();
         } else {
             this.monthlyViewCount = input.yesterdayMonthlyViewCount() + input.viewCountIncrement();
-            this.monthlyWatchTimeMs = input.yesterdayMonthlyWatchTimeMs() + input.watchTimeMsIncrement();
+            this.monthlyWatchTimeMs = input.yesterdayMonthlyWatchTimeMs() + input.watchTimeIncrementMs();
         }
     }
 
