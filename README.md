@@ -33,7 +33,7 @@ Java, Spring Boot, Spring Batch, JPA, MySQL, Redis, Docker
 - 일별 조회수 일관성 문제: 일별 조회수 증가량의 시간 범위가 일관적이지 않을 수 있는 문제
   - 일별 최종 조회수를 별도 테이블에 스냅샷으로 저장하여 일관성 및 배치 멱등성 확보
 - 비관적 락으로 인한 타임아웃 문제: 대규모 트래픽 상황에서 발생하는 조회수 증가 요청 처리 문제
-  - Redis를 사용해 조회수 증가 및 어뷰징 방지 처리를 하고, 1분 간격으로 RDB에 동기화
+  - Redis를 사용해 조회수 증가 처리를 하고, 1분 간격으로 RDB에 동기화
 - [@Transactional noRollbackFor 트랜잭션 전파](https://violet-level-671.notion.site/Transactional-noRollbackFor-134244fa33bd80cf9fb4e3c1d1e2f158?pvs=4)
 - [MySQL Table Data Import Wizard 속도가 매우 느린 문제](https://violet-level-671.notion.site/MySQL-Table-Data-Import-Wizard-13b244fa33bd80cf9613fd2a58c04986?pvs=4)
 
