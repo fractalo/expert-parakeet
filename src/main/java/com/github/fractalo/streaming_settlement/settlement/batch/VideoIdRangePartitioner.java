@@ -27,7 +27,7 @@ public class VideoIdRangePartitioner implements Partitioner {
         Instant startOfNextDay = baseDate.plusDays(1).atStartOfDay(settlementConst.ZONE_ID).toInstant();
 
         Optional<Video> firstVideo = videoRepository.findFirstByCreatedAtBeforeOrderByIdAsc(startOfNextDay);
-        Optional<Video> lastVideo = videoRepository.findLastByCreatedAtBeforeOrderByIdAsc(startOfNextDay);
+        Optional<Video> lastVideo = videoRepository.findFirstByCreatedAtBeforeOrderByIdDesc(startOfNextDay);
         if (firstVideo.isEmpty() || lastVideo.isEmpty()) {
             return Map.of();
         }

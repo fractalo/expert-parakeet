@@ -23,7 +23,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     Page<Video> findByCreatedAtBefore(Instant createdAt, Pageable pageable);
 
     Optional<Video> findFirstByCreatedAtBeforeOrderByIdAsc(Instant createdAt);
-    Optional<Video> findLastByCreatedAtBeforeOrderByIdAsc(Instant createdAt);
+    Optional<Video> findFirstByCreatedAtBeforeOrderByIdDesc(Instant createdAt);
 
     Page<Video> findByIdBetween(Long minId, Long maxId, Pageable pageable);
 }
