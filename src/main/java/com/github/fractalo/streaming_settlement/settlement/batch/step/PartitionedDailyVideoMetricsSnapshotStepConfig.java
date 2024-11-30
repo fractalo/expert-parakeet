@@ -4,8 +4,10 @@ import com.github.fractalo.streaming_settlement.domain.Video;
 import com.github.fractalo.streaming_settlement.repository.VideoRepository;
 import com.github.fractalo.streaming_settlement.settlement.constant.SettlementConst;
 import com.github.fractalo.streaming_settlement.settlement.batch.VideoIdRangePartitioner;
+import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoSettlementInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.partition.PartitionHandler;
 import org.springframework.batch.core.partition.support.Partitioner;
@@ -15,14 +17,19 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.Order;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +39,7 @@ import java.util.Map;
 public class PartitionedDailyVideoMetricsSnapshotStepConfig {
 
     public static final String STEP_NAME = "partitionedDailyVideoMetricsSnapshotStep";
-    private static final int CHUNK_SIZE = 50;
+    private static final int CHUNK_SIZE = 100;
     private static final int POOL_SIZE = 10;
 
     private final JobRepository jobRepository;

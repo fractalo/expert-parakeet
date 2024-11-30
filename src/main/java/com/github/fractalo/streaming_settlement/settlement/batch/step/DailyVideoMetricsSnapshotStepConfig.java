@@ -29,7 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DailyVideoMetricsSnapshotStepConfig {
 
-    private static final int CHUNK_SIZE = 50;
+    private static final int CHUNK_SIZE = 100;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager platformTransactionManager;

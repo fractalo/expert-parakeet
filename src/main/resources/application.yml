@@ -6,7 +6,7 @@ spring:
 
   datasource:
     primary:
-      jdbc-url: ${PRIMARY_DB_URL}
+      jdbc-url: ${PRIMARY_DB_URL}?rewriteBatchedStatements=true
       username: ${PRIMARY_DB_USERNAME}
       password: ${PRIMARY_DB_PASSWORD}
       driver-class-name: com.mysql.cj.jdbc.Driver

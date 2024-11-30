@@ -1,6 +1,6 @@
 package com.github.fractalo.streaming_settlement.domain;
 
-import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInput;
+import com.github.fractalo.streaming_settlement.settlement.dto.DailyVideoStatisticsInitializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 @Entity
@@ -16,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
         @Index(name = "unq_video_id_date", columnList = "video_id, date", unique = true),
+        @Index(name = "idx_date", columnList = "date"),
         @Index(name = "idx_view_count_increment", columnList = "view_count_increment"),
         @Index(name = "idx_weekly_view_count", columnList = "weekly_view_count"),
         @Index(name = "idx_monthly_view_count", columnList = "monthly_view_count"),
@@ -62,27 +62,15 @@ public class DailyVideoStatistics {
     private Long monthlyWatchTimeMs;
 
 
-    public DailyVideoStatistics(Video video, LocalDate date, DailyVideoStatisticsInput input) {
+    public DailyVideoStatistics(Video video, DailyVideoStatisticsInitializer init) {
         this.video = video;
-        this.date = date;
-        this.viewCountIncrement = input.viewCountIncrement();
-        this.watchTimeIncrementMs = input.watchTimeIncrementMs();
-
-        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            this.weeklyViewCount = input.viewCountIncrement();
-            this.weeklyWatchTimeMs = input.watchTimeIncrementMs();
-        } else {
-            this.weeklyViewCount = input.yesterdayWeeklyViewCount() + input.viewCountIncrement();
-            this.weeklyWatchTimeMs = input.yesterdayWeeklyWatchTimeMs() + input.watchTimeIncrementMs();
-        }
-
-        if (date.getDayOfMonth() == 1) {
-            this.monthlyViewCount = input.viewCountIncrement();
-            this.monthlyWatchTimeMs = input.watchTimeIncrementMs();
-        } else {
-            this.monthlyViewCount = input.yesterdayMonthlyViewCount() + input.viewCountIncrement();
-            this.monthlyWatchTimeMs = input.yesterdayMonthlyWatchTimeMs() + input.watchTimeIncrementMs();
-        }
+        this.date = init.getDate();
+        this.viewCountIncrement = init.getViewCountIncrement();
+        this.watchTimeIncrementMs = init.getWatchTimeIncrementMs();
+        this.weeklyViewCount = init.getWeeklyViewCount();
+        this.weeklyWatchTimeMs = init.getWeeklyWatchTimeMs();
+        this.monthlyViewCount = init.getMonthlyViewCount();
+        this.monthlyWatchTimeMs = init.getMonthlyWatchTimeMs();
     }
 
 }

@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
-        @Index(name = "idx_video_id_created_at", columnList = "video_id, created_at"),
+        @Index(name = "idx_created_at_video_id", columnList = "created_at, video_id"),
 })
 public class Video {
     @Id
