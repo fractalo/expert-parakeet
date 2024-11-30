@@ -19,9 +19,9 @@ public class PartitionedDailyVideoAggregationJobConfig {
     public static final String JOB_NAME = "partitionedDailyVideoAggregationJob";
 
     private final JobRepository jobRepository;
-    private final Step partitionedDailyVideoMetricsSnapshotStep;
-    private final Step partitionedDailyVideoStatisticsStep;
-    private final Step partitionedDailyVideoSettlementStep;
+    private final Step partitionedDailyVideoMetricsSnapshotStepManager;
+    private final Step partitionedDailyVideoStatisticsStepManager;
+    private final Step partitionedDailyVideoSettlementStepManager;
     private final JobExecutionDecider skipDailyVideoMetricsSnapshotStepDecider;
     private final JobParametersValidator dailyVideoAggregationJobParametersValidator;
 
@@ -32,7 +32,7 @@ public class PartitionedDailyVideoAggregationJobConfig {
                 .validator(dailyVideoAggregationJobParametersValidator)
                 .start(skipDailyVideoMetricsSnapshotStepDecider)
                     .on("CONTINUE")
-                    .to(partitionedDailyVideoMetricsSnapshotStep)
+                    .to(partitionedDailyVideoMetricsSnapshotStepManager)
                     .next(mainFlow())
                 .from(skipDailyVideoMetricsSnapshotStepDecider)
                     .on("SKIP")
@@ -44,8 +44,8 @@ public class PartitionedDailyVideoAggregationJobConfig {
     @Bean(name = JOB_NAME + "_mainFlow")
     public Flow mainFlow() {
         return new FlowBuilder<Flow>("mainFlow")
-                .start(partitionedDailyVideoStatisticsStep)
-                .next(partitionedDailyVideoSettlementStep)
+                .start(partitionedDailyVideoStatisticsStepManager)
+                .next(partitionedDailyVideoSettlementStepManager)
                 .end();
     }
 
