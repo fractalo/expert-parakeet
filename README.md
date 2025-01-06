@@ -22,13 +22,14 @@ Java, Spring Boot, Spring Batch, JPA, MySQL, Redis, Docker
 ![streaming_settlement drawio](https://github.com/user-attachments/assets/e2be219d-9d61-4466-b162-6dd08da67d54)
 
 ## 성능 개선
-- 배치 작업 속도 개선: 영상 500만 개 기준으로, 일일 정산 및 통계 배치 작업 속도 개선
-  - 싱글스레드: x분
-  - 파티셔닝 적용 (멀티스레드): y분
-  - 커서 기반 페이지네이션 사용 및 쿼리 최적화: z분
-- 조회수 증가 요청 TPS 개선
-  - Redis 사용
-
+- 배치 작업 속도 개선: 영상 500만 개 기준으로, 일일 정산 및 통계 배치 작업 속도 개선 [스크린샷](https://violet-level-671.notion.site/13a244fa33bd80f2a5a9e700b79a0c8f?pvs=4)
+  - 개선 전 (싱글스레드): 115분
+  - 파티셔닝 적용 (멀티스레드): 20분
+  - Bulk Insert 적용: 13분
+- 조회수 및 시청 기록 갱신 요청 TPS 개선 [설계내용](https://violet-level-671.notion.site/Redis-162244fa33bd807f8a10ca4e4474b5a9?pvs=4)
+  - Redis에 Write-back 전략 사용
+  - Lua 스크립트로 원자적 연산 및 동시성 보장
+  
 ## 트러블 슈팅
 - 일별 조회수 일관성 문제: 일별 조회수 증가량의 시간 범위가 일관적이지 않을 수 있는 문제
   - 일별 최종 조회수를 별도 테이블에 스냅샷으로 저장하여 일관성 및 배치 멱등성 확보
