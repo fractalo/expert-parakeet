@@ -19,7 +19,7 @@ Java, Spring Boot, Spring Batch, JPA, MySQL, Redis, Docker
    - 일별, 주별, 월별 영상 시청 시간
 
 ## 아키텍처
-![streaming_settlement drawio](https://github.com/user-attachments/assets/e2be219d-9d61-4466-b162-6dd08da67d54)
+![streaming_settlement drawio](https://github.com/user-attachments/assets/c5d2ba05-06c7-4a74-bed8-c7f1ae2ba3ce)
 
 ## 성능 개선
 - 배치 작업 속도 개선: 영상 500만 개 기준으로, 일일 정산 및 통계 배치 작업 속도 개선 [스크린샷](https://violet-level-671.notion.site/13a244fa33bd80f2a5a9e700b79a0c8f?pvs=4)
