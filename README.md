@@ -42,7 +42,7 @@ Java, Spring Boot, Spring Batch, JPA, MySQL, Redis, Docker
 [Postman](https://www.postman.com/observer-poa/streaming-settlement/documentation/850ervr/streaming-settlement-system-api)
 
 ## ERD
-![ERD](https://github.com/user-attachments/assets/6547e51c-0e94-4fe6-959c-3ced7e311ad5)
+![ERD](https://github.com/user-attachments/assets/05863644-315c-4c91-9dd1-362a3b6d882b)
 
 
 ## 빌드 및 실행
